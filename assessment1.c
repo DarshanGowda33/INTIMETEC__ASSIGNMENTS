@@ -15,10 +15,7 @@ void removeSpace(char *expression){
 }
 
 int isValidOperator(char operator){
-    if( operator == '+' || operator == '-' || operator == '*' || operator == '/'){
-        return 1;
-    }
-    return 0;
+    return (operator == '+' || operator == '-' || operator == '*' || operator == '/');
 }
 
 void processExpression(char *expression, char operators[], int operands[]){
@@ -39,7 +36,7 @@ void processExpression(char *expression, char operators[], int operands[]){
 
 int divisionMultiplicationOperation(int operands[], char operators[]) {
     int tempOperand[250], tempOperator[250];
-    int operandIndex = 0, operatorIndex = 0;
+    int operandIndex = 0, operatorIndex = 0,result = 1;
     tempOperand[operandIndex++] = operands[0];
     for (int i = 0; operators[i]; i++) {
         if (operators[i] == '*') {
@@ -47,7 +44,8 @@ int divisionMultiplicationOperation(int operands[], char operators[]) {
         } else if(operators[i] == '/') {
             if (operands[i + 1] == 0) {
                 printf("Error: Division by zero\n");
-                return 0;
+                result = 0;
+                break;
             }
             tempOperand[operandIndex - 1] /= operands[i + 1];
         } else {
@@ -55,14 +53,16 @@ int divisionMultiplicationOperation(int operands[], char operators[]) {
             tempOperand[operandIndex++] = operands[i + 1];
         }
     }
-    for (int i = 0; i < operandIndex; i++) 
-        operands[i] = tempOperand[i];
-    for (int i = 0; i < operatorIndex; i++) 
-        operators[i] = tempOperator[i];
-    operators[operatorIndex] = '\0';
-    return 1;
+    if(result){
+        for (int i = 0; i < operandIndex; i++) 
+            operands[i] = tempOperand[i];
+        for (int i = 0; i < operatorIndex; i++) 
+            operators[i] = tempOperator[i];
+        operators[operatorIndex] = '\0';
+    }
+    return result;
 }
-//12 2    + '\0' 
+
 int additionSubtractionOperation(int operands[], char operator[]){
     int result = operands[0]; 
     for(int i=0; operator[i]; i++){
@@ -78,7 +78,7 @@ int additionSubtractionOperation(int operands[], char operator[]){
 int main(){
 
     char expression[500], operator[250];
-    int operands[500];
+    int operands[500],valid = 1,success = 1;
     printf("Enter The Expression : ");
     fgets(expression, sizeof(expression), stdin);
     expression[strcspn(expression,"\n")]='\0';
@@ -88,19 +88,24 @@ int main(){
     int expressionLength = strlen(expression);
 
     for(int i=0; i<expressionLength; i++){
-        if(! (isdigit(expression[i]) || isValidOperator(expression[i]))){
+        if(!(isdigit(expression[i]) || isValidOperator(expression[i]))){
             printf("Error: Invalid expression.");
-            return 0;
+            valid = 0;
+            break;
         }
     }
-    
-    processExpression(expression, operator, operands);
+     
+    if(valid){
+        processExpression(expression, operator, operands);
 
-    if(!divisionMultiplicationOperation(operands,operator)) 
-        return 0;
-
-    int result = additionSubtractionOperation(operands, operator);
-
-    printf("%d\n",result);
-    return 1;
+        if(!divisionMultiplicationOperation(operands,operator)) {
+            success = 0;
+        }else{
+            int result = additionSubtractionOperation(operands, operator);
+            printf("%d\n",result);
+        }
+    }else{
+        success = 0;
+    }
+    return success;
 }

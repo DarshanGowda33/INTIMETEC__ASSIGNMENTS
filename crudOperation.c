@@ -3,7 +3,7 @@
 #include <string.h>
 
 #define MAX_NAME_LEN 100
-
+#define FILE_PATH "C:\\Users\\darshan gowda k r\\Documents\\User Data\\users.txt"
 
 typedef struct {
     int id;
@@ -11,10 +11,34 @@ typedef struct {
     int age;
 } User;
 
-void createUser() {
-    FILE *fp = fopen("C:\\Users\\darshan gowda k r\\Documents\\User Data\\users.txt", "a");
-    if (!fp) {
+typedef enum {
+    CREATE_USER = 1,
+    READ_USERS,
+    UPDATE_USER,
+    DELETE_USER,
+    EXIT
+} MenuOption;
+
+FILE* openFile(const char *path, const char *mode) {
+    FILE *fp = fopen(path, mode);
+    if (!fp) 
+    {
         perror("Unable to open file");
+    }
+    return fp;
+}
+
+void closeFile(FILE *fp) {
+    if (fp != NULL) 
+    {
+        fclose(fp);
+    }
+}
+
+void createUser() {
+    FILE *fp = openFile(FILE_PATH, "a");
+    if (!fp) 
+    {
         return;
     }
 
@@ -27,26 +51,27 @@ void createUser() {
     scanf("%d", &user.age);
 
     fprintf(fp, "%d,%s,%d\n", user.id, user.name, user.age);
-    fclose(fp);
+    closeFile(fp);
     printf("User added successfully.\n");
 }
 
 
 void readUsers() {
-    FILE *fp = fopen("C:\\Users\\darshan gowda k r\\Documents\\User Data\\users.txt", "r");
-    if (!fp) {
-        perror("Unable to open file");
+    FILE *fp = openFile(FILE_PATH, "r");
+    if (!fp) 
+    {
         return;
     }
 
     User user;
     char line[256];
-    printf("\n--- User List ---\n");
-    while (fgets(line, sizeof(line), fp)) {
+    printf("\nUser List\n");
+    while (fgets(line, sizeof(line), fp)) 
+    {
         sscanf(line, "%d,%[^,],%d", &user.id, user.name, &user.age);
         printf("ID: %d | Name: %s | Age: %d\n", user.id, user.name, user.age);
     }
-    fclose(fp);
+    closeFile(fp);
 }
 
 void updateUser() {
@@ -54,9 +79,10 @@ void updateUser() {
     printf("Enter ID of user to update: ");
     scanf("%d", &targetId);
 
-    FILE *fp = fopen("C:\\Users\\darshan gowda k r\\Documents\\User Data\\users.txt", "r");
-    FILE *temp = fopen("temp.txt", "w");
-    if (!fp || !temp) {
+    FILE *fp = openFile(FILE_PATH, "r");
+    FILE *temp = openFile("temp.txt", "w");
+    if (!fp || !temp) 
+    {
         perror("Unable to open file");
         return;
     }
@@ -65,9 +91,11 @@ void updateUser() {
     char line[256];
     int found = 0;
 
-    while (fgets(line, sizeof(line), fp)) {
+    while (fgets(line, sizeof(line), fp)) 
+    {
         sscanf(line, "%d,%[^,],%d", &user.id, user.name, &user.age);
-        if (user.id == targetId) {
+        if (user.id == targetId) 
+        {
             found = 1;
             printf("Enter new Name: ");
             scanf(" %[^\n]", user.name);
@@ -77,15 +105,19 @@ void updateUser() {
         fprintf(temp, "%d,%s,%d\n", user.id, user.name, user.age);
     }
 
-    fclose(fp);
-    fclose(temp);
-    remove("C:\\Users\\darshan gowda k r\\Documents\\User Data\\users.txt");
-    rename("temp.txt", "C:\\Users\\darshan gowda k r\\Documents\\User Data\\users.txt");
+    closeFile(fp);
+    closeFile(temp);
+    remove(FILE_PATH);
+    rename("temp.txt",FILE_PATH);
 
     if (found)
+    {
         printf("User updated successfully.\n");
+    }
     else
+    {
         printf("User with ID %d not found.\n", targetId);
+    }
 }
 
 void deleteUser() {
@@ -93,9 +125,10 @@ void deleteUser() {
     printf("Enter ID of user to delete: ");
     scanf("%d", &targetId);
 
-    FILE *fp = fopen("C:\\Users\\darshan gowda k r\\Documents\\User Data\\users.txt", "r");
-    FILE *temp = fopen("temp.txt", "w");
-    if (!fp || !temp) {
+    FILE *fp = openFile(FILE_PATH, "r");
+    FILE *temp = openFile("temp.txt", "w");
+    if (!fp || !temp) 
+    {
         perror("Unable to open file");
         return;
     }
@@ -104,47 +137,65 @@ void deleteUser() {
     char line[256];
     int found = 0;
 
-    while (fgets(line, sizeof(line), fp)) {
+    while (fgets(line, sizeof(line), fp)) 
+    {
         sscanf(line, "%d,%[^,],%d", &user.id, user.name, &user.age);
-        if (user.id != targetId) {
+        if (user.id != targetId) 
+        {
             fprintf(temp, "%d,%s,%d\n", user.id, user.name, user.age);
-        } else {
+        } else 
+        {
             found = 1;
         }
     }
 
-    fclose(fp);
-    fclose(temp);
-    remove("C:\\Users\\darshan gowda k r\\Documents\\User Data\\users.txt");
-    rename("temp.txt", "C:\\Users\\darshan gowda k r\\Documents\\User Data\\users.txt");
+    closeFile(fp);
+    closeFile(temp);
+    remove(FILE_PATH);
+    rename("temp.txt", FILE_PATH);
 
     if (found)
+    {
         printf("User deleted successfully.\n");
+    }
     else
+    {
         printf("User with ID %d not found.\n", targetId);
+    }    
 }
 
 int main() {
     int choice;
     do {
-        printf("\n--- User Management ---\n");
-        printf("1. Create User\n");
-        printf("2. Read Users\n");
-        printf("3. Update User\n");
-        printf("4. Delete User\n");
-        printf("5. Exit\n");
+        printf("\nUser Management\n");
+        printf("%d. Create User\n", CREATE_USER);
+        printf("%d. Read Users\n", READ_USERS);
+        printf("%d. Update User\n", UPDATE_USER);
+        printf("%d. Delete User\n", DELETE_USER);
+        printf("%d. Exit\n", EXIT);
         printf("Enter your choice: ");
         scanf("%d", &choice);
 
-        switch (choice) {
-            case 1: createUser(); break;
-            case 2: readUsers(); break;
-            case 3: updateUser(); break;
-            case 4: deleteUser(); break;
-            case 5: printf("Exiting...\n"); break;
-            default: printf("Invalid choice. Try again.\n");
+        switch ((MenuOption)choice) {
+            case CREATE_USER:
+                createUser();
+                break;
+            case READ_USERS:
+                readUsers();
+                break;
+            case UPDATE_USER:
+                updateUser();
+                break;
+            case DELETE_USER:
+                deleteUser();
+                break;
+            case EXIT:
+                printf("Exiting...\n");
+                break;
+            default:
+                printf("Invalid choice. Try again.\n");
         }
-    } while (choice != 5);
+    } while (choice != EXIT);
 
     return 0;
 }

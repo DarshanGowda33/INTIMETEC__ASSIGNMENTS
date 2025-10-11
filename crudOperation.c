@@ -19,7 +19,8 @@ typedef enum {
     EXIT
 } MenuOption;
 
-FILE* openFile(const char *path, const char *mode) {
+FILE* openFile(const char *path, const char *mode) 
+{
     FILE *fp = fopen(path, mode);
     if (!fp) 
     {
@@ -28,14 +29,16 @@ FILE* openFile(const char *path, const char *mode) {
     return fp;
 }
 
-void closeFile(FILE *fp) {
+void closeFile(FILE *fp) 
+{
     if (fp != NULL) 
     {
         fclose(fp);
     }
 }
 
-void createUser() {
+void createUser() 
+{
     FILE *fp = openFile(FILE_PATH, "a");
     if (!fp) 
     {
@@ -56,7 +59,8 @@ void createUser() {
 }
 
 
-void readUsers() {
+void readUsers() 
+{
     FILE *fp = openFile(FILE_PATH, "r");
     if (!fp) 
     {
@@ -74,7 +78,8 @@ void readUsers() {
     closeFile(fp);
 }
 
-void updateUser() {
+void updateUser() 
+{
     int targetId;
     printf("Enter ID of user to update: ");
     scanf("%d", &targetId);
@@ -120,7 +125,8 @@ void updateUser() {
     }
 }
 
-void deleteUser() {
+void deleteUser() 
+{
     int targetId;
     printf("Enter ID of user to delete: ");
     scanf("%d", &targetId);
@@ -143,7 +149,8 @@ void deleteUser() {
         if (user.id != targetId) 
         {
             fprintf(temp, "%d,%s,%d\n", user.id, user.name, user.age);
-        } else 
+        } 
+        else 
         {
             found = 1;
         }
@@ -164,9 +171,11 @@ void deleteUser() {
     }    
 }
 
-int main() {
+int main() 
+{
     int choice;
-    do {
+    do 
+    {
         printf("\nUser Management\n");
         printf("%d. Create User\n", CREATE_USER);
         printf("%d. Read Users\n", READ_USERS);
@@ -176,7 +185,8 @@ int main() {
         printf("Enter your choice: ");
         scanf("%d", &choice);
 
-        switch ((MenuOption)choice) {
+        switch ((MenuOption)choice) 
+        {
             case CREATE_USER:
                 createUser();
                 break;
@@ -195,7 +205,8 @@ int main() {
             default:
                 printf("Invalid choice. Try again.\n");
         }
-    } while (choice != EXIT);
+    } 
+    while (choice != EXIT);
 
     return 0;
 }

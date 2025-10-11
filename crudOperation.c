@@ -5,13 +5,15 @@
 #define MAX_NAME_LEN 100
 #define FILE_PATH "C:\\Users\\darshan gowda k r\\Documents\\User Data\\users.txt"
 
-typedef struct {
+typedef struct 
+{
     int id;
     char name[MAX_NAME_LEN];
     int age;
 } User;
 
-typedef enum {
+typedef enum 
+{
     CREATE_USER = 1,
     READ_USERS,
     UPDATE_USER,

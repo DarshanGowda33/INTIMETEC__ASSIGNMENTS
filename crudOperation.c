@@ -3,7 +3,8 @@
 #include <string.h>
 
 #define MAX_NAME_LEN 100
-#define FILE_PATH "C:\\Users\\darshan gowda k r\\Documents\\User Data\\users.txt"
+// #define FILE_PATH "C:\\Users\\darshan gowda k r\\Documents\\User Data\\users.txt"
+#define FILE_PATH "C:\\Users\\gagan\\Desktop\\users.txt"
 
 typedef struct 
 {
@@ -42,42 +43,38 @@ void closeFile(FILE *fp)
 void createUser() 
 {
     FILE *fp = openFile(FILE_PATH, "a");
-    if (!fp) 
-    {
-        return;
+    if (fp) {
+        User user;
+        printf("Enter ID: ");
+        scanf("%d", &user.id);
+        printf("Enter Name: ");
+        scanf(" %[^\n]", user.name);
+        printf("Enter Age: ");
+        scanf("%d", &user.age);
+
+        fprintf(fp, "%d,%s,%d\n", user.id, user.name, user.age);
+        closeFile(fp);
+        printf("User added successfully.\n");
     }
 
-    User user;
-    printf("Enter ID: ");
-    scanf("%d", &user.id);
-    printf("Enter Name: ");
-    scanf(" %[^\n]", user.name);
-    printf("Enter Age: ");
-    scanf("%d", &user.age);
-
-    fprintf(fp, "%d,%s,%d\n", user.id, user.name, user.age);
-    closeFile(fp);
-    printf("User added successfully.\n");
 }
 
 
 void readUsers() 
 {
     FILE *fp = openFile(FILE_PATH, "r");
-    if (!fp) 
+    if (fp) 
     {
-        return;
+        User user;
+        char line[256];
+        printf("\nUser List\n");
+        while (fgets(line, sizeof(line), fp)) 
+        {
+            sscanf(line, "%d,%[^,],%d", &user.id, user.name, &user.age);
+            printf("ID: %d | Name: %s | Age: %d\n", user.id, user.name, user.age);
+        }
+        closeFile(fp);
     }
-
-    User user;
-    char line[256];
-    printf("\nUser List\n");
-    while (fgets(line, sizeof(line), fp)) 
-    {
-        sscanf(line, "%d,%[^,],%d", &user.id, user.name, &user.age);
-        printf("ID: %d | Name: %s | Age: %d\n", user.id, user.name, user.age);
-    }
-    closeFile(fp);
 }
 
 void updateUser() 
@@ -88,42 +85,41 @@ void updateUser()
 
     FILE *fp = openFile(FILE_PATH, "r");
     FILE *temp = openFile("temp.txt", "w");
-    if (!fp || !temp) 
+    if (fp && temp) 
     {
-        perror("Unable to open file");
-        return;
-    }
+        User user;
+        char line[256];
+        int found = 0;
 
-    User user;
-    char line[256];
-    int found = 0;
-
-    while (fgets(line, sizeof(line), fp)) 
-    {
-        sscanf(line, "%d,%[^,],%d", &user.id, user.name, &user.age);
-        if (user.id == targetId) 
+        while (fgets(line, sizeof(line), fp)) 
         {
-            found = 1;
-            printf("Enter new Name: ");
-            scanf(" %[^\n]", user.name);
-            printf("Enter new Age: ");
-            scanf("%d", &user.age);
+            sscanf(line, "%d,%[^,],%d", &user.id, user.name, &user.age);
+            if (user.id == targetId) 
+            {
+                found = 1;
+                printf("Enter new Name: ");
+                scanf(" %[^\n]", user.name);
+                printf("Enter new Age: ");
+                scanf("%d", &user.age);
+            }
+            fprintf(temp, "%d,%s,%d\n", user.id, user.name, user.age);
         }
-        fprintf(temp, "%d,%s,%d\n", user.id, user.name, user.age);
-    }
 
-    closeFile(fp);
-    closeFile(temp);
-    remove(FILE_PATH);
-    rename("temp.txt",FILE_PATH);
+        closeFile(fp);
+        closeFile(temp);
+        remove(FILE_PATH);
+        rename("temp.txt",FILE_PATH);
 
-    if (found)
-    {
-        printf("User updated successfully.\n");
-    }
-    else
-    {
-        printf("User with ID %d not found.\n", targetId);
+        if (found)
+        {
+            printf("User updated successfully.\n");
+        }
+        else
+        {
+            printf("User with ID %d not found.\n", targetId);
+        }
+    }else{
+        perror("Unable to open file");
     }
 }
 
@@ -135,41 +131,40 @@ void deleteUser()
 
     FILE *fp = openFile(FILE_PATH, "r");
     FILE *temp = openFile("temp.txt", "w");
-    if (!fp || !temp) 
+    if (fp && temp) 
     {
-        perror("Unable to open file");
-        return;
-    }
+        User user;
+        char line[256];
+        int found = 0;
 
-    User user;
-    char line[256];
-    int found = 0;
-
-    while (fgets(line, sizeof(line), fp)) 
-    {
-        sscanf(line, "%d,%[^,],%d", &user.id, user.name, &user.age);
-        if (user.id != targetId) 
+        while (fgets(line, sizeof(line), fp)) 
         {
-            fprintf(temp, "%d,%s,%d\n", user.id, user.name, user.age);
-        } 
-        else 
-        {
-            found = 1;
+            sscanf(line, "%d,%[^,],%d", &user.id, user.name, &user.age);
+            if (user.id != targetId) 
+            {
+                fprintf(temp, "%d,%s,%d\n", user.id, user.name, user.age);
+            } 
+            else 
+            {
+                found = 1;
+            }
         }
-    }
 
-    closeFile(fp);
-    closeFile(temp);
-    remove(FILE_PATH);
-    rename("temp.txt", FILE_PATH);
+        closeFile(fp);
+        closeFile(temp);
+        remove(FILE_PATH);
+        rename("temp.txt", FILE_PATH);
 
-    if (found)
-    {
-        printf("User deleted successfully.\n");
-    }
-    else
-    {
-        printf("User with ID %d not found.\n", targetId);
+        if (found)
+        {
+            printf("User deleted successfully.\n");
+        }
+        else
+        {
+            printf("User with ID %d not found.\n", targetId);
+        }
+    }else{
+        perror("Unable to open file");
     }    
 }
 

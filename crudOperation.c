@@ -3,8 +3,7 @@
 #include <string.h>
 
 #define MAX_NAME_LEN 100
-// #define FILE_PATH "C:\\Users\\darshan gowda k r\\Documents\\User Data\\users.txt"
-#define FILE_PATH "C:\\Users\\gagan\\Desktop\\users.txt"
+#define FILE_PATH "C:\\Users\\darshan gowda k r\\Documents\\User Data\\users.txt"
 
 typedef struct 
 {
@@ -118,7 +117,9 @@ void updateUser()
         {
             printf("User with ID %d not found.\n", targetId);
         }
-    }else{
+    }
+    else
+    {
         perror("Unable to open file");
     }
 }
@@ -163,7 +164,9 @@ void deleteUser()
         {
             printf("User with ID %d not found.\n", targetId);
         }
-    }else{
+    }
+    else
+    {
         perror("Unable to open file");
     }    
 }

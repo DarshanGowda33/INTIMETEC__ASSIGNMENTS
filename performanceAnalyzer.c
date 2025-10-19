@@ -5,29 +5,29 @@
 
 struct studentDetails
 {
-    int roll_num;
+    int rollNumber;
     char name[50];
     int marks[3];
     int total;
-    float average_marks;
+    float averageMarks;
     char grade;
 };
 
 void computeGrade(struct studentDetails *student)
 {
-    if (student->average_marks >= 85)
+    if (student->averageMarks >= 85)
     {
         student->grade = 'A';
     }
-    else  if (student->average_marks >= 70)
+    else  if (student->averageMarks >= 70)
     {
         student->grade = 'B';
     }
-    else  if (student->average_marks >= 50)
+    else  if (student->averageMarks >= 50)
     {
         student->grade = 'C';
     }
-    else  if (student->average_marks >= 35)
+    else  if (student->averageMarks >= 35)
     {
         student->grade = 'D';
     }
@@ -71,7 +71,7 @@ void printRoll(struct studentDetails student[],int studentsCount,int index)
     {
         return;
     }
-    printf(" %d",student[index].roll_num);
+    printf(" %d",student[index].rollNumber);
     printRoll(student,studentsCount,index+1);
 }
 
@@ -80,10 +80,10 @@ void printStudentDetails(struct studentDetails *students,int studentsCount)
     printf("\nStudent details: \n");
     for (int index = 0; index < studentsCount; index++)
     {
-        printf("\nRoll : %d\n",students[index].roll_num);
+        printf("\nRoll : %d\n",students[index].rollNumber);
         printf("Name : %s\n",students[index].name);
         printf("Total Marks : %d\n",students[index].total);
-        printf("Average Marks : %.2f\n",students[index].average_marks);
+        printf("Average Marks : %.2f\n",students[index].averageMarks);
         printf("Grade : %c\n",students[index].grade);
         
         if (students[index].grade == 'F')
@@ -106,9 +106,9 @@ int main()
     for (int index = 0; index < studentsCount; index++)
     {
         printf("Enter student %d details(roll,name,marks1,marks2,marks3): ",index+1);
-        scanf("%d %s %d %d %d",&students[index].roll_num,students[index].name,&students[index].marks[0],&students[index].marks[1],&students[index].marks[2]);
+        scanf("%d %s %d %d %d",&students[index].rollNumber,students[index].name,&students[index].marks[0],&students[index].marks[1],&students[index].marks[2]);
         students[index].total = students[index].marks[0]+students[index].marks[1]+students[index].marks[2];
-        students[index].average_marks = students[index].total / 3.0;
+        students[index].averageMarks = students[index].total / 3.0;
         computeGrade(&students[index]);
     }
     printStudentDetails(students,studentsCount);

@@ -64,26 +64,26 @@ void computePerformance(char grade)
     printf("\n");
 }
 
-void printRoll(Student student[],const int studentsCount,int index)
+void printRoll(Student student[], const int studentsCount, int index)
 {
     if (index == studentsCount)
     {
         return;
     }
-    printf(" %d",student[index].rollNumber);
-    printRoll(student,studentsCount,index + 1);
+    printf(" %d", student[index].rollNumber);
+    printRoll(student, studentsCount, index + 1);
 }
 
-void printStudentDetails(Student *students,const int studentsCount)
+void printStudentDetails(Student *students, const int studentsCount)
 {
     printf("\nStudent details: \n");
     for (int index = 0; index < studentsCount; index++)
     {
-        printf("\nRoll : %d\n",students[index].rollNumber);
-        printf("Name : %s\n",students[index].name);
-        printf("Total Marks : %d\n",students[index].total);
-        printf("Average Marks : %.2f\n",students[index].averageMarks);
-        printf("Grade : %c\n",students[index].grade);
+        printf("\nRoll : %d\n", students[index].rollNumber);
+        printf("Name : %s\n", students[index].name);
+        printf("Total Marks : %d\n", students[index].total);
+        printf("Average Marks : %.2f\n", students[index].averageMarks);
+        printf("Grade : %c\n", students[index].grade);
         
         if (students[index].grade == 'F')
         {
@@ -100,9 +100,9 @@ int main()
 {
     Student students[MAX_STUDENTS];
 
-    int studentsCount,index;
+    int studentsCount, index;
     printf("\nEnter number of students: ");
-    scanf("%d",&studentsCount);
+    scanf("%d", &studentsCount);
     for (int index = 0; index < studentsCount; index++)
     {
         printf("Enter student %d details: ", index + 1);
@@ -116,9 +116,9 @@ int main()
         students[index].averageMarks = students[index].total / 3.0;
         computeGrade(&students[index]);
     }
-    printStudentDetails(students,studentsCount);
+    printStudentDetails(students, studentsCount);
     printf("\nList of Roll Numbers (via recursion): ");
-    printRoll(students,studentsCount,0);
+    printRoll(students, studentsCount, 0);
     printf("\n");
     return 0;
 }

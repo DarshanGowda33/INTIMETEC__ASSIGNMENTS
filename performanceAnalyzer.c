@@ -1,9 +1,8 @@
 #include <stdio.h>
-#include <string.h>
 
 #define MAX_STUDENTS 100
 
-struct studentDetails
+typedef struct Student
 {
     int rollNumber;
     char name[50];
@@ -11,9 +10,9 @@ struct studentDetails
     int total;
     float averageMarks;
     char grade;
-};
+} Student;
 
-void computeGrade(struct studentDetails *student)
+void computeGrade(Student *student)
 {
     if (student->averageMarks >= 85)
     {
@@ -65,17 +64,17 @@ void computePerformance(char grade)
     printf("\n");
 }
 
-void printRoll(struct studentDetails student[],int studentsCount,int index)
+void printRoll(Student student[],const int studentsCount,int index)
 {
     if (index == studentsCount)
     {
         return;
     }
     printf(" %d",student[index].rollNumber);
-    printRoll(student,studentsCount,index+1);
+    printRoll(student,studentsCount,index + 1);
 }
 
-void printStudentDetails(struct studentDetails *students,int studentsCount)
+void printStudentDetails(Student *students,const int studentsCount)
 {
     printf("\nStudent details: \n");
     for (int index = 0; index < studentsCount; index++)
@@ -99,15 +98,21 @@ void printStudentDetails(struct studentDetails *students,int studentsCount)
 
 int main()
 {
-    struct studentDetails students[MAX_STUDENTS];
+    Student students[MAX_STUDENTS];
+
     int studentsCount,index;
     printf("\nEnter number of students: ");
     scanf("%d",&studentsCount);
     for (int index = 0; index < studentsCount; index++)
     {
-        printf("Enter student %d details(roll,name,marks1,marks2,marks3): ",index+1);
-        scanf("%d %s %d %d %d",&students[index].rollNumber,students[index].name,&students[index].marks[0],&students[index].marks[1],&students[index].marks[2]);
-        students[index].total = students[index].marks[0]+students[index].marks[1]+students[index].marks[2];
+        printf("Enter student %d details: ", index + 1);
+        scanf("%d %s %d %d %d",
+              &students[index].rollNumber,
+              students[index].name,
+              &students[index].marks[0],
+              &students[index].marks[1],
+              &students[index].marks[2]);
+        students[index].total = students[index].marks[0] + students[index].marks[1] + students[index].marks[2];
         students[index].averageMarks = students[index].total / 3.0;
         computeGrade(&students[index]);
     }

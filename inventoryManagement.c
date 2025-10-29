@@ -23,9 +23,9 @@ typedef enum
 
 void removeNewLine(char *str)
 {
-    for(char *character = str; *character != '\0'; character++)
+    for (char *character = str; *character != '\0'; character++)
     {
-        if(*character == '\n')
+        if (*character == '\n')
         {
             *character = '\0';
             break;
@@ -77,10 +77,11 @@ void addNewProducts(product** products, int *productCount, int *currentCount)
     {
         *productCount *= 2;
         product *temp = (product *)realloc(*products, (*productCount)*sizeof(product));
-        if (temp != NULL)
+        if (temp == NULL)
         {
-            *products = temp;
+            return;
         }
+        *products = temp;
     }
     product *p = *products + *currentCount;
     printf("\nEnter details for product %d: \n", *currentCount+1);
@@ -100,13 +101,11 @@ void addNewProducts(product** products, int *productCount, int *currentCount)
 
 void viewAllProducts(product *products, const int currentCount)
 {
-    int status = 1;
     if (currentCount == 0)
     {
         printf("No Product details found");
-        status = 0;
     }
-    if (status)
+    else
     {
         printf("\nPRODUCT LIST\n");
         for (product *ptr = products; ptr < products + currentCount; ptr++)
@@ -138,7 +137,7 @@ void updateQuantity(product *products, const int currentCount)
 void searchProductById(product *products, const int currentCount)
 {
     int productId;
-    printf("Enter Product ID search: ");
+    printf("Enter Product ID to search: ");
     scanf("%d", &productId);
     for (product *ptr = products; ptr < products + currentCount; ptr++)
     {
@@ -156,8 +155,8 @@ void searchProductByName(product *products, const int currentCount)
 {
     char searchName[50];
     int found = 0;
-    getchar();
     printf("\nEnter product name to search: ");
+    getchar();
     fgets(searchName, sizeof(searchName), stdin);
     removeNewLine(searchName);
     for (product *ptr = products; ptr < products + currentCount; ptr++)
@@ -209,17 +208,21 @@ void deleteById(product** products, int *currentCount)
     int productId;
     printf("Enter product ID to delete: ");
     scanf("%d", &productId);
-    for(product *ptr = *products; ptr < *products + *currentCount; ptr++)
+    for (product *ptr = *products; ptr < *products + *currentCount; ptr++)
     {
-        if(ptr -> productId == productId)
+        if (ptr -> productId == productId)
         {
-            
-            for(product *shiftPtr = ptr; shiftPtr < *products + (*currentCount - 1); shiftPtr++)
+            for (product *shiftPtr = ptr; shiftPtr < *products + (*currentCount - 1); shiftPtr++)
             {
                 *shiftPtr = *(shiftPtr + 1);
             }
             (*currentCount)--;
             printf("\nProduct ID %d deleted successfully.\n", productId);
+            product *temp = realloc(*products,(*currentCount) * sizeof(product));
+            if (temp != NULL || *currentCount == 0)
+            {
+                *products = temp;
+            }
             return;
         }
     }
@@ -228,68 +231,63 @@ void deleteById(product** products, int *currentCount)
 
 int main()
 {
-    int productCount, result = 1, currentCount = 0;
+    int productCount, currentCount = 0;
     printf("Enter initial product count: ");
     scanf("%d", &productCount);
     product *products = (product *)calloc(productCount, sizeof(product));
     if (products == NULL)
     {
         printf("Memory allocation failed");
-        result = 0;
+        return 1;
     }
     for (int index = 0; index < productCount; index++)
     {
         addNewProducts(&products, &productCount, &currentCount);
     }
-    if (result)
+    int choice;
+    do
     {
-        int choice;
-        do
+        printf("\n\n=====INVENTORY MENU======\n");
+        printf("%d. Add New Product\n", ADD_PRODUCT);
+        printf("%d. View All Products\n", VIEW_PRODUCTS);
+        printf("%d. Update Quantity\n", UPDATE_QUANTITY);
+        printf("%d. Search Product by ID\n", SEARCH_BY_ID);
+        printf("%d. Search Product by Name\n", SEARCH_BY_NAME);
+        printf("%d. Search Product by Price Range\n", SEARCH_BY_PRICE_RANGE);
+        printf("%d. Delete Product\n", DELETE);
+        printf("%d. Exit\n", EXIT);
+        printf("Enter your choice:");
+        scanf("%d", &choice);
+        switch ((menuOptions)choice)
         {
-            printf("\n\n=====INVENTORY MENU======\n");
-            printf("%d. Add New Product\n", ADD_PRODUCT);
-            printf("%d. View All Products\n", VIEW_PRODUCTS);
-            printf("%d. Update Quantity\n", UPDATE_QUANTITY);
-            printf("%d. Search Product by ID\n", SEARCH_BY_ID);
-            printf("%d. Search Product by Name\n", SEARCH_BY_NAME);
-            printf("%d. Search Product by Price Range\n", SEARCH_BY_PRICE_RANGE);
-            printf("%d. Delete Product\n", DELETE);
-            printf("%d. Exit\n", EXIT);
-            printf("Enter your choice:");
-            scanf("%d", &choice);
-
-            switch ((menuOptions)choice)
-            {
-                case ADD_PRODUCT:
-                    addNewProducts(&products, &productCount, &currentCount);
-                    break;
-                case VIEW_PRODUCTS:
-                    viewAllProducts(products, currentCount);
-                    break;
-                case UPDATE_QUANTITY:
-                    updateQuantity(products, currentCount);
-                    break;
-                case SEARCH_BY_ID:
-                    searchProductById(products, currentCount);
-                    break;
-                case SEARCH_BY_NAME:
-                    searchProductByName(products, currentCount);
-                    break;
-                case SEARCH_BY_PRICE_RANGE:
-                    searchProductsByPriceRange(products, currentCount);
-                    break;
-                case DELETE:
-                    deleteById(&products, &currentCount);
-                    break;
-                case EXIT:
-                    printf("Memory released successfully. Exiting program...\n");
-                    break;
-                default:
-                    printf("\nInvalid choice. Try again\n");
-            }
-        } while (choice != EXIT);
-        
-    }
+            case ADD_PRODUCT:
+                addNewProducts(&products, &productCount, &currentCount);
+                break;
+            case VIEW_PRODUCTS:
+                viewAllProducts(products, currentCount);
+                break;
+            case UPDATE_QUANTITY:
+                updateQuantity(products, currentCount);
+                break;
+            case SEARCH_BY_ID:
+                searchProductById(products, currentCount);
+                break;
+            case SEARCH_BY_NAME:
+                searchProductByName(products, currentCount);
+                break;
+            case SEARCH_BY_PRICE_RANGE:
+                searchProductsByPriceRange(products, currentCount);
+                break;
+            case DELETE:
+                deleteById(&products, &currentCount);
+                break;
+            case EXIT:
+                printf("Memory released successfully. Exiting program...\n");
+                break;
+            default:
+                printf("\nInvalid choice. Try again\n");
+        }
+    } while (choice != EXIT);
     free(products);
     return 0;
 }

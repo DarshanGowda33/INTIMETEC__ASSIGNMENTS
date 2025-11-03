@@ -51,7 +51,7 @@ bool isSubstringExists(const char *original, const char *substring)
             }
             if (*ptrSubstring == '\0')
             {
-                found = 1;
+                found = true;
             }
             ptrOriginal++;
         }

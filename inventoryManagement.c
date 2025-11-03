@@ -1,10 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 
 typedef struct product
 {
-    int productId;
-    char productName[50];
+    int Id;
+    char Name[50];
     float price;
     int quantity;
 } product;
@@ -21,9 +22,9 @@ typedef enum
     EXIT
 } menuOptions;
 
-void removeNewLine(char *str)
+void removeNewLine(char *text)
 {
-    for (char *character = str; *character != '\0'; character++)
+    for (char *character = text; *character != '\0'; character++)
     {
         if (*character == '\n')
         {
@@ -33,14 +34,10 @@ void removeNewLine(char *str)
     }
 }
 
-int isSubstringExists(const char *original, const char *substring)
+bool isSubstringExists(const char *original, const char *substring)
 {
-    int found = 0;
-    if (*substring == '\0')
-    {
-        found = 1;
-    }
-    else
+    bool found = false;
+    if (*substring != '\0')
     {
         const char *ptrOriginal = original;
         while (*ptrOriginal != '\0' && !found)
@@ -59,59 +56,75 @@ int isSubstringExists(const char *original, const char *substring)
             ptrOriginal++;
         }
     }
+    else
+    {
+        found = true;
+    }
     return found;
 }
 
+void printMenu()
+{
+    printf("\n\n=====INVENTORY MENU======\n");
+    printf("%d. Add New Product\n", ADD_PRODUCT);
+    printf("%d. View All Products\n", VIEW_PRODUCTS);
+    printf("%d. Update Quantity\n", UPDATE_QUANTITY);
+    printf("%d. Search Product by ID\n", SEARCH_BY_ID);
+    printf("%d. Search Product by Name\n", SEARCH_BY_NAME);
+    printf("%d. Search Product by Price Range\n", SEARCH_BY_PRICE_RANGE);
+    printf("%d. Delete Product\n", DELETE);
+    printf("%d. Exit\n", EXIT);
+}
 void printDetails(product *product)
 {
     printf("\nProduct ID : %d | Name : %s | Price : %.2f | Quantity : %d\n",
-           product->productId,
-           product->productName,
+           product->Id,
+           product->Name,
            product->price,
            product->quantity);
 }
 
-void addNewProducts(product** products, int *productCount, int *currentCount)
+void addProduct(product** products, int *capacity, int *currentCount)
 {
-    if (*currentCount >= *productCount)
+    if (*currentCount >= *capacity)
     {
-        *productCount *= 2;
-        product *temp = (product *)realloc(*products, (*productCount)*sizeof(product));
+        *capacity *= 2;
+        product *temp = (product *)realloc(*products, (*capacity) * sizeof(product));
         if (temp == NULL)
         {
             return;
         }
         *products = temp;
     }
-    product *p = *products + *currentCount;
+    product *newProduct = *products + *currentCount;
     printf("\nEnter details for product %d: \n", *currentCount+1);
     printf("\nProduct Id : ");
-    scanf("%d", &p->productId);
-    getchar();
+    scanf("%d", &newProduct->Id);
     printf("Product Name : ");
-    fgets(p -> productName, sizeof(p -> productName), stdin);
-    removeNewLine(p -> productName);
+    getchar();
+    fgets(newProduct -> Name, sizeof(newProduct -> Name), stdin);
+    removeNewLine(newProduct->Name);
     printf("Product Price : ");
-    scanf("%f", &p->price);
+    scanf("%f", &newProduct->price);
     printf("Product Quantity : ");
-    scanf("%d", &p->quantity);
+    scanf("%d", &newProduct->quantity);
     (*currentCount)++;
     printf("\nproduct added successfully!\n");
 }
 
-void viewAllProducts(product *products, const int currentCount)
+void displayProducts(product *products, const int currentCount)
 {
-    if (currentCount == 0)
-    {
-        printf("No Product details found");
-    }
-    else
+    if (currentCount != 0)
     {
         printf("\nPRODUCT LIST\n");
         for (product *ptr = products; ptr < products + currentCount; ptr++)
         {
             printDetails(ptr);
         }
+    }
+    else
+    {
+        printf("No Product details found");
     }
 }
 
@@ -124,7 +137,7 @@ void updateQuantity(product *products, const int currentCount)
     scanf("%d", &newQuantity);
     for (product *ptr = products; ptr < products + currentCount; ptr++)
     {
-        if (ptr -> productId == productId)
+        if (ptr -> Id == productId)
         {
             ptr -> quantity = newQuantity;
             printf("\nQuantity updated successfully!");
@@ -136,39 +149,39 @@ void updateQuantity(product *products, const int currentCount)
 
 void searchProductById(product *products, const int currentCount)
 {
-    int productId;
+    int searchId;
     printf("Enter Product ID to search: ");
-    scanf("%d", &productId);
+    scanf("%d", &searchId);
     for (product *ptr = products; ptr < products + currentCount; ptr++)
     {
-        if (ptr -> productId == productId)
+        if (ptr -> Id == searchId)
         {
             printf("\nProduct found: ");
             printDetails(ptr);
             return;
         }
     }
-    printf("\n Product ID %d not found.\n", productId);
+    printf("\n Product ID %d not found.\n", searchId);
 }
 
 void searchProductByName(product *products, const int currentCount)
 {
     char searchName[50];
-    int found = 0;
+    bool found = false;
     printf("\nEnter product name to search: ");
     getchar();
     fgets(searchName, sizeof(searchName), stdin);
     removeNewLine(searchName);
     for (product *ptr = products; ptr < products + currentCount; ptr++)
     {
-        if (isSubstringExists(ptr->productName, searchName))
+        if (isSubstringExists(ptr->Name, searchName))
         {
             if (!found)
             {
                 printf("\nProducts found: \n");
             }
             printDetails(ptr);
-            found = 1;
+            found = true;
         }
     }
     if (!found)
@@ -180,7 +193,7 @@ void searchProductByName(product *products, const int currentCount)
 void searchProductsByPriceRange(product *products, const int currentCount)
 {
     float minimumPrice, maximumPrice;
-    int found = 0;
+    bool found = false;
     printf("Enter minimum Price: ");
     scanf("%f", &minimumPrice);
     printf("Enter maximum Price: ");
@@ -194,7 +207,7 @@ void searchProductsByPriceRange(product *products, const int currentCount)
                 printf("\nProducts in price range:\n ");
             }
             printDetails(ptr);
-            found = 1;
+            found = true;
         }
     }
     if (!found)
@@ -210,7 +223,7 @@ void deleteById(product** products, int *currentCount)
     scanf("%d", &productId);
     for (product *ptr = *products; ptr < *products + *currentCount; ptr++)
     {
-        if (ptr -> productId == productId)
+        if (ptr->Id == productId)
         {
             for (product *shiftPtr = ptr; shiftPtr < *products + (*currentCount - 1); shiftPtr++)
             {
@@ -218,7 +231,7 @@ void deleteById(product** products, int *currentCount)
             }
             (*currentCount)--;
             printf("\nProduct ID %d deleted successfully.\n", productId);
-            product *temp = realloc(*products,(*currentCount) * sizeof(product));
+            product *temp = realloc(*products, (*currentCount) * sizeof(product));
             if (temp != NULL || *currentCount == 0)
             {
                 *products = temp;
@@ -231,40 +244,32 @@ void deleteById(product** products, int *currentCount)
 
 int main()
 {
-    int productCount, currentCount = 0;
+    int capacity, currentCount = 0;
     printf("Enter initial product count: ");
-    scanf("%d", &productCount);
-    product *products = (product *)calloc(productCount, sizeof(product));
+    scanf("%d", &capacity);
+    product *products = (product *)calloc(capacity, sizeof(product));
     if (products == NULL)
     {
         printf("Memory allocation failed");
         return 1;
     }
-    for (int index = 0; index < productCount; index++)
+    for (int index = 0; index < capacity; index++)
     {
-        addNewProducts(&products, &productCount, &currentCount);
+        addProduct(&products, &capacity, &currentCount);
     }
     int choice;
     do
     {
-        printf("\n\n=====INVENTORY MENU======\n");
-        printf("%d. Add New Product\n", ADD_PRODUCT);
-        printf("%d. View All Products\n", VIEW_PRODUCTS);
-        printf("%d. Update Quantity\n", UPDATE_QUANTITY);
-        printf("%d. Search Product by ID\n", SEARCH_BY_ID);
-        printf("%d. Search Product by Name\n", SEARCH_BY_NAME);
-        printf("%d. Search Product by Price Range\n", SEARCH_BY_PRICE_RANGE);
-        printf("%d. Delete Product\n", DELETE);
-        printf("%d. Exit\n", EXIT);
-        printf("Enter your choice:");
+        printMenu();
+        printf("\nEnter your choice:");
         scanf("%d", &choice);
         switch ((menuOptions)choice)
         {
             case ADD_PRODUCT:
-                addNewProducts(&products, &productCount, &currentCount);
+                addProduct(&products, &capacity, &currentCount);
                 break;
             case VIEW_PRODUCTS:
-                viewAllProducts(products, currentCount);
+                displayProducts(products, currentCount);
                 break;
             case UPDATE_QUANTITY:
                 updateQuantity(products, currentCount);
@@ -289,5 +294,6 @@ int main()
         }
     } while (choice != EXIT);
     free(products);
+    products = NULL;
     return 0;
 }

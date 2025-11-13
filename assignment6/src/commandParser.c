@@ -1,69 +1,69 @@
 #include "commandParser.h"
 
-CommandType parseCommand(const char *cmd)
+CommandType parseCommand(const char *command)
 {
-    if (!cmd)
-        return CMD_INVALID;
-    if (!strcmp(cmd, "mkdir"))
-        return CMD_MKDIR;
-    if (!strcmp(cmd, "rmdir"))
-        return CMD_RMDIR;
-    if (!strcmp(cmd, "create"))
-        return CMD_CREATE;
-    if (!strcmp(cmd, "write"))
-        return CMD_WRITE;
-    if (!strcmp(cmd, "read"))
-        return CMD_READ;
-    if (!strcmp(cmd, "delete"))
-        return CMD_DELETE;
-    if (!strcmp(cmd, "ls"))
-        return CMD_LS;
-    if (!strcmp(cmd, "cd"))
-        return CMD_CD;
-    if (!strcmp(cmd, "pwd"))
-        return CMD_PWD;
-    if (!strcmp(cmd, "df"))
-        return CMD_DF;
-    if (!strcmp(cmd, "exit"))
-        return CMD_EXIT;
-    return CMD_INVALID;
+    if (!command)
+        return INVALID;
+    if (!strcmp(command, "mkdir"))
+        return MKDIR;
+    if (!strcmp(command, "rmdir"))
+        return RMDIR;
+    if (!strcmp(command, "create"))
+        return CREATE;
+    if (!strcmp(command, "write"))
+        return WRITE;
+    if (!strcmp(command, "read"))
+        return READ;
+    if (!strcmp(command, "delete"))
+        return DELETE;
+    if (!strcmp(command, "ls"))
+        return LS;
+    if (!strcmp(command, "cd"))
+        return CD;
+    if (!strcmp(command, "pwd"))
+        return PWD;
+    if (!strcmp(command, "df"))
+        return DF;
+    if (!strcmp(command, "exit"))
+        return EXIT;
+    return INVALID;
 }
 
-void executeCommand(CommandType cmd, char *arg1, char *arg2)
+void executeCommand(CommandType command, char *arg1, char *arg2)
 {
-    switch (cmd)
+    switch (command)
     {
-        case CMD_MKDIR:
+        case MKDIR:
             mkdirCmd(arg1);
             break;
-        case CMD_RMDIR:
+        case RMDIR:
             rmdirCmd(arg1);
             break;
-        case CMD_CREATE:
+        case CREATE:
             createCmd(arg1);
             break;
-        case CMD_WRITE:
+        case WRITE:
             writeCmd(arg1, arg2);
             break;
-        case CMD_READ:
+        case READ:
             readCmd(arg1);
             break;
-        case CMD_DELETE:
+        case DELETE:
             deleteCmd(arg1);
             break;
-        case CMD_LS:
+        case LS:
             lsCmd();
             break;
-        case CMD_CD:
+        case CD:
             cdCmd(arg1);
             break;
-        case CMD_PWD:
+        case PWD:
             pwdCmd();
             break;
-        case CMD_DF:
+        case DF:
             dfCmd();
             break;
-        case CMD_EXIT:
+        case EXIT:
             cleanup();
             exit(0);
         default:

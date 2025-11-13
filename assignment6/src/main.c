@@ -27,7 +27,7 @@ int main()
             continue;
         }
 
-        char *cmd = strtok(input, " ");
+        char *command = strtok(input, " ");
         char *arg1 = strtok(NULL, " ");
         char *arg2 = strtok(NULL, "");
         if (arg2 && arg2[0] == '"')
@@ -40,8 +40,10 @@ int main()
             }
         }
 
-        CommandType type = parseCommand(cmd);
+        CommandType type = parseCommand(command);
         executeCommand(type, arg1, arg2);
     }
+    free(root);
+    root = NULL;
     return 0;
 }

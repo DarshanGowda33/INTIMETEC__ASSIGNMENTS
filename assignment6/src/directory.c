@@ -68,7 +68,7 @@ void rmdirCmd(const char *directoryName)
     printf("Directory not found.\n");
 }
 
-void lsCmd(void)
+void lsCmd()
 {
     bool empty = true;
     DirectoryNode *directory = cwd->subDirs;
@@ -124,7 +124,7 @@ void cdCmd(const char *directoryName)
     printf("Directory not found.\n");
 }
 
-void pwdCmd(void)
+void pwdCmd()
 {
     DirectoryNode *temp = cwd;
     char path[256] = "";

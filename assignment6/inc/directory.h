@@ -6,13 +6,12 @@
 #include <string.h>
 #include <stdbool.h>
 
-#define MAX_NAME_LEN 50
 #define TOTAL_BLOCKS 1024
 #define BLOCK_SIZE 512
 
 typedef struct FileNode
 {
-    char name[MAX_NAME_LEN];
+    char name[50];
     char *data;
     int size;
     struct FileNode *next;
@@ -20,7 +19,7 @@ typedef struct FileNode
 
 typedef struct DirectoryNode
 {
-    char name[MAX_NAME_LEN];
+    char name[50];
     struct DirectoryNode *parent;
     struct DirectoryNode *subDirs;
     struct DirectoryNode *next;

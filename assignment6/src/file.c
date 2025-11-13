@@ -137,7 +137,7 @@ void deleteCmd(const char *filename)
     printf("File not found.\n");
 }
 
-void dfCmd(void)
+void dfCmd()
 {
     int usedBlocks = countUsedBlocksDir(root);
     int freeBlocks = TOTAL_BLOCKS - usedBlocks;
@@ -152,7 +152,7 @@ void dfCmd(void)
     printf("Disk Usage: %.2f%%\n", usage);
 }
 
-void cleanup(void)
+void cleanup()
 {
     printf("Memory released. Exiting program...\n");
 }

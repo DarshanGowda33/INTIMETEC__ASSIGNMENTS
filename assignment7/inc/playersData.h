@@ -1,5 +1,5 @@
-#ifndef PLAYERS_DATA_H
-#define PLAYERS_DATA_H
+#ifndef PLAYERSDATA_H
+#define PLAYERSDATA_H
 
 typedef struct
 {

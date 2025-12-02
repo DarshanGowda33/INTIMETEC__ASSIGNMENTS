@@ -4,14 +4,8 @@
 #include <ctype.h>
 #include <strings.h>
 
-#include "menu.h"
-#include "player.h"
-#include "players_data.h"
-#include "list.h"
-#include "team.h"
-#include "performance.h"
-#include "search.h"
-#include "sort.h"
+#include "operations.h"
+#include "playersData.h"
 
 #define MAX_TEAMS 10
 
@@ -289,7 +283,6 @@ static void displayTeamsSorted()
                temp[index].avgBattingStrikeRate,
                temp[index].totalPlayers);
     }
-
     printf("=========================================================\n");
 }
 
@@ -378,7 +371,7 @@ static void displayTopKPlayers()
 }
 
 
-static void displayPlayersByPerformance(void)
+static void displayPlayersByPerformance()
 {
     printf("Enter Role (1-Batsman, 2-Bowler, 3-All-rounder): ");
     int index;
@@ -438,7 +431,8 @@ int main()
 
         displayMenu();
 
-        if (scanf("%d", &choice) != 1) {
+        if (scanf("%d", &choice) != 1)
+        {
             printf("Invalid input.\n");
             return 0;
         }
